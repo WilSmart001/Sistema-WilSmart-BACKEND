@@ -92,6 +92,7 @@ class Product_Model():
     def increment_product():
         try:
             connection = get_connection()
+            products = []
             with connection.cursor() as cursor:
                 cursor.execute('''
                                 SELECT cod_productos, nombre_pro, cantidad_pro
@@ -100,11 +101,14 @@ class Product_Model():
                 result = cursor.fetchall()
                 if result is not None:
                     for row in result:
-                        return {
-                            'cod': int(row[0]),
-                            'nombre': str(row[1]).strip(),
-                            'cantidad': int(row[2]),
-                        }
+                        products.append(
+                            {
+                                'cod': int(row[0]),
+                                'nombre': str(row[1]).strip(),
+                                'cantidad': int(row[2]),
+                            }
+                        )
+                return products
         except Exception as ex:
             raise(ex)
     
@@ -118,6 +122,48 @@ class Product_Model():
                                 SET cantidad_pro = %s,
                                 WHERE cod_productos = %s;
                                 ''',(value,cod))
+            connection.commit()
+            connection.close()
+            return int(cod)
+        except Exception as ex:
+            raise(ex)
+    
+    @classmethod
+    def offer_product():
+        try:
+            connection = get_connection()
+            products = []
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                                SELECT cod_productos, nombre_pro, imagen_pro, precio_pro ,cantidad_pro
+                                FROM productos;
+                                ''')
+                result = cursor.fetchall()
+                if result is not None:
+                    for row in result:
+                        products.append(
+                            {
+                                'cod': int(row[0]),
+                                'nombre': str(row[1]).strip(),
+                                'imagen': str(row[2]).strip(),
+                                'precio': float(str(str(row[3]).split(' ')[0]).replace(',','.')),
+                                'cantidad': int(row[4])
+                            }
+                        )
+                return products
+        except Exception as ex:
+            raise(ex)
+    
+    @classmethod
+    def sell_product(cod, cantidad):
+        try:
+            connection = get_connection()
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                                UPDATE productos
+                                SET cantidad_pro = %s,
+                                WHERE cod_productos = %s;
+                                ''',(cantidad,cod))
             connection.commit()
             connection.close()
             return int(cod)

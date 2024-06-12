@@ -76,3 +76,11 @@ def arithmetic_product(cod):
         return jsonify({'message': "Error during update"}), 404
     except Exception as ex:
         return jsonify({'message':str(ex)}), 500
+
+@main.route('/offer')
+def offer_product():
+    try:
+        pruducts = Product_Model.offer_product()
+        return jsonify(pruducts)
+    except Exception as ex:
+        return jsonify({'message':str(ex)}),500
