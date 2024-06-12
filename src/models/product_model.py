@@ -123,3 +123,5 @@ class Product_Model():
             return int(cod)
         except Exception as ex:
             raise(ex)
+    
+    
