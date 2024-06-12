@@ -11,7 +11,7 @@ class Employee_Model():
                                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                                 RETURNING cod_empleados;
                                 ''',(nombre_completo,telefono,ci,salario,foto,correo,fecha_nacimiento,direccion,estado_civil,cargo))
-            cod = cursor.fetchone()[0]
+                cod = cursor.fetchone()[0]
             connection.commit()
             connection.close()
             return cod
@@ -39,7 +39,7 @@ class Employee_Model():
                                 ''',(nombre_completo,telefono,ci,salario,foto,correo,fecha_nacimiento,direccion,estado_civil,cargo,cod))
             connection.commit()
             connection.close()
-            return cod
+            return int(cod)
         except Exception as ex:
             raise(ex)
 
@@ -56,17 +56,18 @@ class Employee_Model():
                                 WHERE e.cod_empleados = %s;
                                 ''',(cod,))
                 row = cursor.fetchone()
+                connection.close()
                 return {
-                    'nombre': row[0],
-                    'telefono': row[1],
-                    'ci': row[2],
-                    'salario': row[3],
-                    'foto': row[4],
-                    'correo': row[5],
+                    'nombre': str(row[0]).strip(),
+                    'telefono': str(row[1]).strip(),
+                    'ci': str(row[2]).strip(),
+                    'salario': float(str(str(row[3]).split(' ')[0]).replace(',','.')),
+                    'foto': str(row[4]).strip(),
+                    'correo': str(row[5]).strip(),
                     'fecha_nacimiento': row[6],
-                    'direccion': row[7],
-                    'estado_civil': row[8],
-                    'cargo': row[9]
+                    'direccion': str(row[7]).strip(),
+                    'estado_civil': str(row[8]).strip(),
+                    'cargo': str(row[9]).strip()
                 }
         except Exception as ex:
             raise(ex)
@@ -78,9 +79,9 @@ class Employee_Model():
             employees = []
             with connection.cursor() as cursor:
                 cursor.execute('''
-                            SELECT e.cod_empleados.foto_emp, e.nombre_completo_emp, c.nombre_car, e.telefono_emp, e.ci_emp, e.salario_emp
+                            SELECT e.cod_empleados, e.nombre_completo_emp, c.nombre_car, e.telefono_emp, e.ci_emp, e.salario_emp
                             FROM empleados AS e
-                            JOIN cargo AS c ON c.cod_cargos = e.cod_cargos
+                            JOIN cargos AS c ON c.cod_cargos = e.cod_cargos
                             ORDER BY e.cod_empleados;
                                 ''')
                 result = cursor.fetchall()
@@ -88,12 +89,12 @@ class Employee_Model():
                     for row in result:
                         employees.append(
                             {
-                                'cod': row[0],
-                                'nombre': row[1],
-                                'cargo': row[2],
-                                'telefono': row[3],
-                                'ci': row[4],
-                                'salario': row[5]
+                                'cod': int(row[0]),
+                                'nombre': str(row[1]).strip(),
+                                'cargo': str(row[2]).strip(),
+                                'telefono': str(row[3]).strip(),
+                                'ci': str(row[4]).strip(),
+                                'salario': float(str(str(row[5]).split(' ')[0]).replace(',','.'))
                             }
                         )
             connection.close()
@@ -112,6 +113,6 @@ class Employee_Model():
                                 ''',(cod,))
                 connection.commit()
                 connection.close()
-                return cod
+                return int(cod)
         except Exception as ex:
             raise(ex)

@@ -14,7 +14,7 @@ class Product_Model():
             cod = cursor.fetchone()[0]
             connection.commit()
             connection.close()
-            return cod
+            return int(cod)
         except Exception as ex:
             raise(ex)
     
@@ -29,7 +29,6 @@ class Product_Model():
                                     cantidad_pro = %s,
                                     fecha_pro = %s,
                                     precio_pro = %s,
-                                    precio_pro = %s,
                                     imagen_pro = %s,
                                     descripcion_pro = %s,
                                     cod_categorias = %s,
@@ -38,7 +37,7 @@ class Product_Model():
                                 ''',(nombre, cantidad, fecha, precio, imagen, descripcion, categoria, marca, cod))
             connection.commit()
             connection.close()
-            return cod
+            return int(cod)
         except Exception as ex:
             raise(ex)
 
@@ -59,14 +58,14 @@ class Product_Model():
                     for row in result:
                         products.append(
                             {
-                                'cod': row[0],
-                                'nombre': row[1],
-                                'descripcion': row[2],
-                                'marca': row[3],
-                                'categoria': row[4],
-                                'cantidad': row[5],
+                                'cod': int(row[0]),
+                                'nombre': str(row[1]).strip(),
+                                'descripcion': str(row[2]).strip(),
+                                'marca': str(row[3]).strip(),
+                                'categoria': str(row[4]).strip(),
+                                'cantidad': int(row[5]),
                                 'fecha': row[6],
-                                'imagen': row[7]
+                                'imagen': str(row[7]).strip()
                             }
                         )
             connection.close()
@@ -85,7 +84,7 @@ class Product_Model():
                                 ''',(cod,))
                 connection.commit()
                 connection.close()
-                return cod
+                return int(cod)
         except Exception as ex:
             raise(ex)
     
@@ -102,9 +101,9 @@ class Product_Model():
                 if result is not None:
                     for row in result:
                         return {
-                            'cod': row[0],
-                            'nombre': row[1],
-                            'cantidad': row[2],
+                            'cod': int(row[0]),
+                            'nombre': str(row[1]).strip(),
+                            'cantidad': int(row[2]),
                         }
         except Exception as ex:
             raise(ex)
@@ -121,6 +120,6 @@ class Product_Model():
                                 ''',(value,cod))
             connection.commit()
             connection.close()
-            return cod
+            return int(cod)
         except Exception as ex:
             raise(ex)
